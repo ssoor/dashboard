@@ -38,6 +38,8 @@ type holder struct {
 	keyFile              string
 	apiServerHost        string
 	heapsterHost         string
+	metricHost           string
+	metricProvider       string
 	kubeConfigFile       string
 	systemBanner         string
 	systemBannerSeverity string
@@ -114,6 +116,16 @@ func (self *holder) GetApiServerHost() string {
 // GetHeapsterHost 'heapster-host' argument of Dashboard binary.
 func (self *holder) GetHeapsterHost() string {
 	return self.heapsterHost
+}
+
+// GetMetricHost 'metric-host' argument of Dashboard binary.
+func (self *holder) GetMetricHost() string {
+	return self.metricHost
+}
+
+// GetMetricProvider 'metric-provider' argument of Dashboard binary.
+func (self *holder) GetMetricProvider() string {
+	return self.metricProvider
 }
 
 // GetKubeConfigFile 'kubeconfig' argument of Dashboard binary.

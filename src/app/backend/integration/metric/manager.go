@@ -23,6 +23,7 @@ import (
 	integrationapi "github.com/kubernetes/dashboard/src/app/backend/integration/api"
 	metricapi "github.com/kubernetes/dashboard/src/app/backend/integration/metric/api"
 	"github.com/kubernetes/dashboard/src/app/backend/integration/metric/heapster"
+	"github.com/kubernetes/dashboard/src/app/backend/integration/metric/sidecar"
 	"k8s.io/apimachinery/pkg/util/wait"
 )
 
@@ -42,6 +43,8 @@ type MetricManager interface {
 	List() []integrationapi.Integration
 	// ConfigureHeapster configures and adds heapster to clients list.
 	ConfigureHeapster(host string) MetricManager
+	// ConfigureMetric configures and adds metric to clients list.
+	ConfigureMetric(provider, host string) MetricManager
 }
 
 // Implements MetricManager interface.
@@ -118,6 +121,27 @@ func (self *metricManager) List() []integrationapi.Integration {
 func (self *metricManager) ConfigureHeapster(host string) MetricManager {
 	kubeClient := self.manager.InsecureClient()
 	metricClient, err := heapster.CreateHeapsterClient(host, kubeClient)
+	if err != nil {
+		log.Printf("There was an error during heapster client creation: %s", err.Error())
+		return self
+	}
+
+	self.clients[metricClient.ID()] = metricClient
+	return self
+}
+
+// ConfigureMetric implements metric manager interface. See MetricManager for more information.
+func (self *metricManager) ConfigureMetric(provider, host string) MetricManager {
+	kubeClient := self.manager.InsecureClient()
+
+	var err error
+	var metricClient metricapi.MetricClient
+	switch provider {
+	case "sidecar":
+		metricClient, err = sidecar.CreateSidecarClient(host, kubeClient)
+	case "heapster":
+		metricClient, err = heapster.CreateHeapsterClient(host, kubeClient)
+	}
 	if err != nil {
 		log.Printf("There was an error during heapster client creation: %s", err.Error())
 		return self

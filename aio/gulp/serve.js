@@ -34,7 +34,7 @@ let runningBackendProcess = null;
  */
 function getBackendArgs() {
   let args = [
-    `--heapster-host=${conf.backend.heapsterServerHost}`,
+    `--metric-host=${conf.backend.sidecarServerHost}`,
     `--tls-cert-file=${conf.backend.tlsCert}`,
     `--tls-key-file=${conf.backend.tlsKey}`,
     `--auto-generate-certificates=${conf.backend.autoGenerateCerts}`,
@@ -104,7 +104,7 @@ gulp.task('watch', () => {
 gulp.task('spawn-backend', gulp.series(gulp.parallel('backend', 'kill-backend', 'locales-for-backend:dev'), () => {
   runningBackendProcess = child.spawn(
     path.join(conf.paths.serve, conf.backend.binaryName), getBackendArgs(),
-    {stdio: 'inherit', cwd: conf.paths.serve});
+    { stdio: 'inherit', cwd: conf.paths.serve });
 
   runningBackendProcess.on('exit', () => {
     // Mark that there is no backend process running anymore.

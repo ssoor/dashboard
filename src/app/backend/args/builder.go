@@ -90,6 +90,18 @@ func (self *holderBuilder) SetHeapsterHost(heapsterHost string) *holderBuilder {
 	return self
 }
 
+// SetMetricProvider 'metric-provider' argument of Dashboard binary.
+func (self *holderBuilder) SetMetricProvider(metricProvider string) *holderBuilder {
+	self.holder.metricProvider = metricProvider
+	return self
+}
+
+// SetMetricHost 'metric-host' argument of Dashboard binary.
+func (self *holderBuilder) SetMetricsHost(metricHost string) *holderBuilder {
+	self.holder.metricHost = metricHost
+	return self
+}
+
 // SetKubeConfigFile 'kubeconfig' argument of Dashboard binary.
 func (self *holderBuilder) SetKubeConfigFile(kubeConfigFile string) *holderBuilder {
 	self.holder.kubeConfigFile = kubeConfigFile
